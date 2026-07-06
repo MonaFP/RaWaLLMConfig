@@ -7,6 +7,8 @@
 //   - _memory bleibt gefiltert.
 // ALLE Pfade liegen in einer temp-Sandbox (NIE reale Config); Inhalte sind Dummy.
 import { test, expect } from '@playwright/test'
+import { mkdirSync } from 'node:fs'
+import { join } from 'node:path'
 import { findDuplicates } from '../../src/main/services/dedupe'
 import { normalizeCat } from '../../shared/cat-key'
 import { makeSandbox, seedFile } from './fixtures'
@@ -82,6 +84,22 @@ test('instructions <-> shared-instructions: KEIN Duplicate-Set (Cross-Tool -> Co
   }
   findDuplicates(data)
   // Cross-Familie ist kein Duplicate — abweichender Inhalt wird in Coverage sichtbar.
+  expect(allSets(data)).toHaveLength(0)
+})
+
+test('codex AGENTS.md ueber mehrere WS: KEIN Duplicate-Set, nur Vergleichskandidaten', () => {
+  const sb: Sandbox = makeSandbox()
+  mkdirSync(join(sb.configDir, 'PM'), { recursive: true })
+  mkdirSync(join(sb.configDir, 'WS'), { recursive: true })
+  const pmPath = seedFile(sb, 'PM/AGENTS.md', '# PM\n\n- A\n')
+  const wsPath = seedFile(sb, 'WS/AGENTS.md', '# WS\n\n- A\n')
+  const data: Record<string, LlmConfig> = {
+    codex: mkFamily([mkCat('codex-instructions', [
+      mkEntry('codex-agents-md-pm', 'AGENTS.md', pmPath),
+      mkEntry('codex-agents-md-ws', 'AGENTS.md', wsPath),
+    ])]),
+  }
+  findDuplicates(data)
   expect(allSets(data)).toHaveLength(0)
 })
 

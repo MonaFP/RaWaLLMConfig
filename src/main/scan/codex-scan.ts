@@ -43,8 +43,9 @@ function pushAgentsMd(entries: ConfigEntry[], seen: Set<string>, dir: string, la
   if (seen.has(key) || !fs.existsSync(fp)) return
   seen.add(key)
   const e = fileEntry(`codex-agents-md-${label}`, dir, 'AGENTS.md', 'project', `AGENTS.md (${label})`, true)
+  e.name = `${label} / AGENTS.md`
   e.origin = label
-  e.fields = { ...e.fields, ursprung: label }
+  e.fields = { ...e.fields, Datei: 'AGENTS.md', ursprung: label }
   entries.push(e)
 }
 

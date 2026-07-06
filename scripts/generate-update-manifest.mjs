@@ -12,7 +12,7 @@
 import { createHash } from 'node:crypto'
 import { existsSync, mkdirSync, readFileSync, writeFileSync, copyFileSync } from 'node:fs'
 import { join, dirname, resolve } from 'node:path'
-import { fileURLToPath, pathToFileURL } from 'node:url'
+import { fileURLToPath } from 'node:url'
 
 // ---------------------------------------------------------------------------
 // Pfade
@@ -20,6 +20,9 @@ import { fileURLToPath, pathToFileURL } from 'node:url'
 const __filename = fileURLToPath(import.meta.url)
 const __dirname  = dirname(__filename)
 const repoRoot   = resolve(__dirname, '..')
+const publicAssetBase =
+  (process.env.RAWALLM_RELEASE_ASSET_BASE_URL ?? 'https://github.com/MonaFP/RaWaLLMConfig/releases/latest/download')
+    .replace(/\/+$/, '')
 
 // ---------------------------------------------------------------------------
 // 1. Version aus package.json
@@ -71,7 +74,7 @@ mkdirSync(updateDir, { recursive: true })
 // 6. latest.json schreiben
 // ---------------------------------------------------------------------------
 const now         = new Date().toISOString()
-const downloadUrl = pathToFileURL(join(updateDir, exeName)).href
+const downloadUrl = `${publicAssetBase}/${encodeURIComponent(exeName)}`
 
 /** @type {object} */
 const manifest = {

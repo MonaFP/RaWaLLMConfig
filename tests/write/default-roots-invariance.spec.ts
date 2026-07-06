@@ -79,7 +79,10 @@ test('Vollstaendigkeit: alle Familien real befuellt (>0 Kategorien/Eintraege)', 
     expect(famCount(app, fam), `Familie ${fam} hat keine Eintraege`).toBeGreaterThan(0)
   }
   // System-Areas (Hardware/Runtimes/Ports/MCP/...) sind ebenfalls real befuellt.
-  expect((await scanSystem()).areas.length).toBeGreaterThan(0)
+  const system = await scanSystem()
+  const hardware = system.areas.find((area) => area.id === 'hardware')
+  expect(system.areas.length).toBeGreaterThan(0)
+  expect(hardware?.entries.length, 'Hardware-Area darf nicht leer sein').toBeGreaterThan(1)
 })
 
 // (c) Kern-Kategorien je Familie sind nicht leer (faengt selektive Read-Regression).

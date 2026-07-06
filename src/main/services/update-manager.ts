@@ -38,7 +38,7 @@ export { getUpdateState }
 // ---------------------------------------------------------------------------
 
 export const UPDATE_DISABLED_REASON =
-  'Update-Installation ist deaktiviert — Umgebungsvariable RAWALLM_UPDATE_ENABLED=1 setzen und App neu starten'
+  'Update-Installation ist deaktiviert — RAWALLM_UPDATE_ENABLED=0 entfernen oder auf 1 setzen und App neu starten'
 
 let checkPromise: Promise<UpdateCheckResult> | null = null
 
@@ -54,7 +54,9 @@ function parseFlag(v: string | undefined): boolean {
 
 /** Gate zur AUFRUFZEIT lesen (testbar ohne require-Cache-Tricks, §3.8 + R10). */
 function isUpdateEnabled(): boolean {
-  return parseFlag(process.env.RAWALLM_UPDATE_ENABLED)
+  const value = process.env.RAWALLM_UPDATE_ENABLED
+  if (value === undefined || value.trim() === '') return true
+  return parseFlag(value)
 }
 
 // Gleichheit (base === target) zaehlt als innerhalb -> includeEqual=true.
@@ -247,7 +249,7 @@ export async function downloadUpdate(
 // ---------------------------------------------------------------------------
 
 export async function installUpdate(req: UpdateInstallRequest): Promise<UpdateInstallResult> {
-  // Gate: Installation nur mit RAWALLM_UPDATE_ENABLED=1 (zur Aufrufzeit gelesen).
+  // Gate: Installation standardmaessig an; RAWALLM_UPDATE_ENABLED=0 deaktiviert.
   if (!isUpdateEnabled()) {
     return { data: null, error: UPDATE_DISABLED_REASON }
   }

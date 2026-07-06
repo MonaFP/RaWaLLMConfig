@@ -7,7 +7,8 @@ import type { UpdateSourcePort } from './update-source-port'
 import { createHttpsUpdateSource } from './update-source-https'
 import { createLocalUpdateSource } from './update-source-local'
 
-export const DEFAULT_RELEASE_URL: string | null = null
+export const DEFAULT_RELEASE_URL =
+  'https://github.com/MonaFP/RaWaLLMConfig/releases/latest/download/latest.json'
 
 interface UpdateSourceEnv {
   RAWALLM_UPDATE_DIR?: string

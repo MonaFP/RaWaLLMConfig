@@ -49,7 +49,6 @@ export function ConfigSection() {
             <div className="empty" style={{ padding: 20 }}>{config.error}</div>
           </div>
         )}
-        <DiagnosticsSummary ad={ad} />
         <ConfigMain ad={ad} />
       </main>
       {/* Confirm-Consumer für Übersicht-Direkt-Editor (WP-09); nur bei
@@ -259,6 +258,7 @@ function CategoryView({ ad, cat }: { ad: LlmConfig; cat: Category }) {
           </button>
         </div>
       </div>
+      <DiagnosticsSummary ad={ad} />
       <ConfigDiagnostics cat={cat} />
       {ui.mode === 'overview' ? (
         <OverviewView cat={cat} onOpen={(id) => actions.openEntry(cat.id, id)} />

@@ -69,6 +69,11 @@ function isMemoryEntry(entry: ConfigEntry): boolean {
   return /[\\/]_memory([\\/]|$)/.test(p)
 }
 
+/** Instructions werden zeilenweise verglichen, aber nie als Reconcile-Duplikate gefuehrt. */
+function isCompareOnlyCategory(cat: string): boolean {
+  return normalizeCat(cat) === 'instructions'
+}
+
 /** Indexiert alle Entries nach normalisiertem entry.name ueber alle Familien/Kategorien. */
 function collectByName(data: Record<string, LlmConfig>): Map<string, Occurrence[]> {
   const map = new Map<string, Occurrence[]>()
@@ -76,6 +81,7 @@ function collectByName(data: Record<string, LlmConfig>): Map<string, Occurrence[
     for (const cat of cfg?.categories ?? []) {
       for (const entry of cat.entries ?? []) {
         if (isMemoryEntry(entry)) continue // _memory ist kein echter Agent
+        if (isCompareOnlyCategory(cat.id)) continue
         const key = normalizeKey(entry.name)
         if (!key) continue
         const list = map.get(key) ?? []

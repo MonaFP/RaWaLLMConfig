@@ -12,10 +12,7 @@ export interface WikilinkFinding {
   reason: string
 }
 
-const TEXT_EXTENSIONS = new Set([
-  '.md', '.mdx', '.txt', '.json', '.jsonc', '.toml', '.yaml', '.yml',
-  '.ts', '.tsx', '.js', '.jsx', '.mjs', '.cjs',
-])
+const DOC_EXTENSIONS = new Set(['.md', '.mdx', '.txt'])
 
 export function scanAllWikilinks(roots: string[]): WikilinkFinding[] {
   const files = textFilesForRoots(roots)
@@ -36,7 +33,7 @@ function textFilesForRoots(roots: string[]): string[] {
 }
 
 function isTextCandidate(absPath: string): boolean {
-  return TEXT_EXTENSIONS.has(path.extname(absPath).toLowerCase())
+  return DOC_EXTENSIONS.has(path.extname(absPath).toLowerCase())
 }
 
 function buildWikilinkIndex(files: string[], roots: string[]): Set<string> {

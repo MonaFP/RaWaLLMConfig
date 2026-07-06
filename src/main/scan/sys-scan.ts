@@ -14,6 +14,7 @@ import { scanMcp, mcpNames } from './mcp-scan'
 import { configRoots } from '../services/config-roots'
 import { getVersionsCached } from '../services/cli-version-cache'
 import type { ToolSpec } from '../services/cli-version-live'
+import { scanHardwareArea } from './hardware-scan'
 
 // Trunk-Pfade aus der Single Source (Default = real, M1 unveraendert; mit
 // RAWALLM_SANDBOX_ROOT zeigt sharedDir unter <sandbox>/.shared/.claude).
@@ -152,12 +153,12 @@ async function liveVersionAreas(): Promise<SystemArea[]> {
 }
 
 // Statische Iststand-Areas OHNE Versionswerte und OHNE Owner-Realdaten.
-// Bewusst leer/neutral: Hardware-Specs, Hosting-Domains und Workspace-Namen sind
-// umgebungsspezifisch und werden nicht hartkodiert. Die dynamischen Versions-
-// Areas (liveVersionAreas) liefern die realen Laufzeit-/CLI-Werte.
+// Bewusst leer/neutral: Hosting-Domains und Workspace-Namen sind
+// umgebungsspezifisch und werden nicht hartkodiert. Hardware wird live
+// lokal erfasst (hardware-scan.ts); die dynamischen Versions-Areas
+// (liveVersionAreas) liefern die realen Laufzeit-/CLI-Werte.
 function staticAreas(): SystemArea[] {
   return stampStatic([
-    { id: 'hardware', label: 'Hardware', icon: 'cpu', blurb: 'Rechner, GPU, Monitore (umgebungsspezifisch).', entries: [] },
     { id: 'editors', label: 'Editor-Extensions', icon: 'edit', blurb: 'VS Code AI/Coding-Extensions.', entries: [
       { id: 'cc-ext', name: 'anthropic.claude-code', status: 'active', desc: 'Claude Code Extension' },
       { id: 'gpt-ext', name: 'openai.chatgpt', status: 'active', desc: 'ChatGPT Extension · Computer-Use GA' },
@@ -173,9 +174,10 @@ export async function scanSystem(): Promise<System> {
     const doc = readJson<PortsDoc>(portsFile)
     const mcp = scanMcp()
     // UI-Reihenfolge erhalten: hardware, [runtimes, cli (live)], editors, hosting, workspaces.
+    const hardware = await scanHardwareArea()
     const stat = staticAreas()
     const live = await liveVersionAreas()
-    const areas = [stat[0], ...live, ...stat.slice(1), localLlmArea(doc), mcpArea(mcp), dbArea(doc), envArea()]
+    const areas = [hardware, ...live, ...stat, localLlmArea(doc), mcpArea(mcp), dbArea(doc), envArea()]
     return { updated: refUpdated(), areas }
   } catch (e) {
     console.error('[scan:sys]', 'scanSystem failed')

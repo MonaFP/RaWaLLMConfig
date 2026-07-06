@@ -29,7 +29,7 @@ function topTokenNames(items: TokenItem[]): string {
   return [...items]
     .sort((a, b) => b.tokens - a.tokens)
     .slice(0, 5)
-    .map((item) => `${item.entry.name} (${item.cat}, ca. ${item.tokens})`)
+    .map((item) => `${item.entry.name} (${item.cat}, ca. ${item.tokens} Tokens)`)
     .join(', ')
 }
 

@@ -21,10 +21,10 @@ test.describe('resolveUpdateSource', () => {
     expect(source.describe()).toEqual({ kind: 'https', configured: true })
   })
 
-  test('ohne Env bleibt die Quelle unkonfiguriert bis eine Default-URL entschieden ist', () => {
-    expect(DEFAULT_RELEASE_URL).toBe(null)
+  test('ohne Env nutzt die oeffentliche GitHub-Release-Quelle', () => {
+    expect(DEFAULT_RELEASE_URL).toBe('https://github.com/MonaFP/RaWaLLMConfig/releases/latest/download/latest.json')
     const source = resolveUpdateSource({})
-    expect(source.describe()).toEqual({ kind: 'local', configured: false })
+    expect(source.describe()).toEqual({ kind: 'https', configured: true })
   })
 
   test('explizites Env-Objekt faellt nicht auf globale RAWALLM_UPDATE_DIR zurueck', () => {
@@ -32,7 +32,7 @@ test.describe('resolveUpdateSource', () => {
     process.env.RAWALLM_UPDATE_DIR = 'C:/global/update-dir'
     try {
       const source = resolveUpdateSource({})
-      expect(source.describe()).toEqual({ kind: 'local', configured: false })
+      expect(source.describe()).toEqual({ kind: 'https', configured: true })
     } finally {
       if (before === undefined) delete process.env.RAWALLM_UPDATE_DIR
       else process.env.RAWALLM_UPDATE_DIR = before

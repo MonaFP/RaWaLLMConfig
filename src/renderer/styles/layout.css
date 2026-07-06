@@ -137,10 +137,17 @@ html[data-structure="lines"] .sidebar, html[data-structure="emboss"] .sidebar { 
 .main { overflow-y: auto; padding: var(--pad) 26px 60px; min-height: 0; }
 
 /* MODE-TABS (Uebersicht / Diff) */
-.view-head { display: flex; align-items: flex-end; gap: 16px; margin-bottom: 18px; flex-wrap: wrap; }
+.view-head {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  align-items: end;
+  gap: 16px;
+  margin-bottom: 18px;
+}
+.view-title { min-width: 0; }
 .view-title h2 { font-size: 26px; font-weight: 900; letter-spacing: -.02em; line-height: 1.05; }
 .view-title p { font-size: 13.5px; font-weight: 700; color: var(--warm-gray); margin-top: 4px; }
-.mode-tabs { display: flex; gap: 6px; margin-left: auto; background: var(--bg-card); padding: 5px; border-radius: 13px; border: 2.5px solid var(--ink); box-shadow: var(--card-shadow-sm); }
+.mode-tabs { display: flex; gap: 6px; justify-self: end; max-width: 100%; background: var(--bg-card); padding: 5px; border-radius: 13px; border: 2.5px solid var(--ink); box-shadow: var(--card-shadow-sm); }
 html[data-structure="lines"] .mode-tabs, html[data-structure="emboss"] .mode-tabs { border: 1px solid var(--border); box-shadow: none; }
 .mode-tab { display: inline-flex; align-items: center; gap: 7px; padding: 8px 15px; border-radius: 9px; font-size: 13px; font-weight: 800; color: var(--warm-gray); transition: all .14s; }
 .mode-tab svg { width: 15px; height: 15px; }
@@ -148,6 +155,11 @@ html[data-structure="lines"] .mode-tabs, html[data-structure="emboss"] .mode-tab
 .mode-tab.on { background: var(--terra); color: #fff; }
 .mode-tab .mt-badge { font-size: 11px; font-weight: 900; background: color-mix(in oklab,var(--terra),#fff 25%); color:#fff; border-radius: 999px; padding: 0 6px; }
 .mode-tab:not(.on) .mt-badge { background: var(--papa-lt); color: var(--papa-d); }
+
+@media (max-width: 900px) {
+  .view-head { grid-template-columns: 1fr; }
+  .mode-tabs { justify-self: start; flex-wrap: wrap; }
+}
 
 /* A8-6: ErrorBoundary-Fallbackseite (Stufe 2) statt weissem Fenster. */
 .error-boundary { position: fixed; inset: 0; display: flex; align-items: center; justify-content: center; padding: 24px; background: var(--bg); z-index: 9999; }

@@ -23,25 +23,31 @@ import type { UpdateProgressPayload } from '../../shared/contract-updates'
 // stageInstaller wartet 100 ms Flush + install-quit haengt an 500-ms-setTimeout.
 test.setTimeout(30_000)
 
-// --- Env-Hygiene: beide Update-Envs je Test sichern + restaurieren -----------
+// --- Env-Hygiene: Update-Envs je Test sichern + restaurieren -----------------
 
 const ENV_DIR = 'RAWALLM_UPDATE_DIR'
 const ENV_GATE = 'RAWALLM_UPDATE_ENABLED'
+const ENV_RELEASE = 'RAWALLM_RELEASE_URL'
 let dirBefore: string | undefined
 let gateBefore: string | undefined
+let releaseBefore: string | undefined
 
 test.beforeEach(() => {
   dirBefore = process.env[ENV_DIR]
   gateBefore = process.env[ENV_GATE]
-  // Definierter Ausgangszustand: keine Quelle, Gate AUS.
+  releaseBefore = process.env[ENV_RELEASE]
+  // Definierter Ausgangszustand: lokale Specs ohne echten HTTPS-Request, Gate default AN.
   delete process.env[ENV_DIR]
   delete process.env[ENV_GATE]
+  process.env[ENV_RELEASE] = 'disabled-for-tests'
 })
 test.afterEach(() => {
   if (dirBefore === undefined) delete process.env[ENV_DIR]
   else process.env[ENV_DIR] = dirBefore
   if (gateBefore === undefined) delete process.env[ENV_GATE]
   else process.env[ENV_GATE] = gateBefore
+  if (releaseBefore === undefined) delete process.env[ENV_RELEASE]
+  else process.env[ENV_RELEASE] = releaseBefore
   // Deps zurueck auf realDeps (naechster Test setzt seine Fakes selbst).
   setUpdateMgrDepsForTest({})
 })
@@ -209,7 +215,7 @@ test.describe('installUpdate', () => {
   test('Gate AUS -> exakt UPDATE_DISABLED_REASON (Import, kein String-Duplikat)', async () => {
     const sb = makeSandbox()
     installDeps(sb)
-    delete process.env[ENV_GATE]
+    process.env[ENV_GATE] = '0'
     const r = await installUpdate({})
     expect(r.data).toBe(null)
     expect(r.error).toBe(UPDATE_DISABLED_REASON)
@@ -217,12 +223,12 @@ test.describe('installUpdate', () => {
     expect(r.error).toContain('RAWALLM_UPDATE_ENABLED')
   })
 
-  test('Gate AN, aber phase != ready -> kein-Installer-bereit', async () => {
+  test('Gate default AN, aber phase != ready -> kein-Installer-bereit', async () => {
     const sb = makeSandbox()
     installDeps(sb)
     seedUpdateSource(sb)
     await checkForUpdates() // Vorzustand: phase 'available', nicht 'ready'
-    process.env[ENV_GATE] = '1'
+    delete process.env[ENV_GATE]
     const r = await installUpdate({})
     expect(r.data).toBe(null)
     expect(r.error).toBe('kein-Installer-bereit')

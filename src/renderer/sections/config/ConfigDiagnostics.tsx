@@ -70,7 +70,7 @@ function tokenDiagnostics(cat: Category): Diagnostic[] {
   return [{
     title: 'Grosse Kontextquellen',
     body: `${heavy.length} Eintraege liegen ueber ca. 2.000 Tokens und sollten ausgelagert oder gesplittet werden.`,
-    names: heavy.slice(0, 4).map((e) => `${e.name} (ca. ${e.tokensEstimated})`),
+    names: heavy.slice(0, 4).map((e) => `${e.name} (ca. ${e.tokensEstimated} Tokens)`),
   }]
 }
 
