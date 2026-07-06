@@ -1,7 +1,7 @@
 {
   "name": "rawallmconfig",
   "version": "0.1.1",
-  "description": "Config-Dashboard (Electron) für die gesamte LLM-Config (Claude + Codex + lokale LLMs + MCP + Shared) — Anzeige + gated owner-editierbar.",
+  "description": "Token-aware LLM config dashboard for Claude, Codex, subscription models, MCP, hooks, and local models.",
   "author": "RaWaLLMConfig contributors",
   "packageManager": "pnpm@10.33.4",
   "license": "AGPL-3.0-or-later",

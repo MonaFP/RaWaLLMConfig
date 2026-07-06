@@ -1,9 +1,10 @@
 # RaWaLLMConfig
 
-RaWaLLMConfig is a local Electron app for inspecting and editing local LLM,
-agent, MCP, hook, and workspace configuration. It is designed for owner-run
-desktop use: configuration is visible in one place, edits are gated, and
-write operations use backup-first safeguards.
+RaWaLLMConfig is a local Electron app for understanding, inspecting, and editing
+LLM configuration across subscription models, Claude, Codex, MCP, hooks, local
+models, agents, and workspace surfaces. It is designed for owner-run desktop
+use: configuration is visible in one place, edits are gated, and write
+operations use backup-first safeguards.
 
 ## Status
 
@@ -15,8 +16,8 @@ and secret-bearing files are excluded from the public source set.
 ## Features
 
 - Electron + Vite + React desktop app.
-- Local-first config dashboard for Claude, Codex, local LLM, MCP, hook, and
-  shared workspace surfaces.
+- Token-aware config dashboard for Claude, Codex, subscription models, MCP,
+  hooks, local models, and shared workspace surfaces.
 - Gated write mode with confirmation and backup-first file writes.
 - Local owner config stays directly visible and editable; writes are protected
   by confirmation and backup-first safeguards, and logs avoid secret values.
