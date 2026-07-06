@@ -1,4 +1,4 @@
-// error-boundary.spec.ts — A8-6: reine LOGIK-Pruefung der ErrorBoundary (Stufe 2).
+// error-boundary.spec.ts — A8-6: reine LOGIK-Pruefung der ErrorBoundary-State-Ableitung (Stufe 2).
 // DOM-frei: testet nur die statische getDerivedStateFromError-Ableitung, die den
 // Fallback-State aus dem geworfenen Fehler bildet. Es wird NICHTS gemountet.
 //
@@ -8,17 +8,17 @@
 // browser-basierter Schritt und gehoert NICHT in diesen Node-Runner — hier wird
 // die ErrorBoundary bewusst nicht in einen DOM gemountet.
 // Runner: Playwright (test/expect) als reiner Node-Test-Runner (kein Browser).
-import { test, expect } from '@playwright/test'
-import { ErrorBoundary } from '../../src/renderer/components/ErrorBoundary'
+import { expect, test } from '@playwright/test'
+import { deriveErrorBoundaryState } from '../../src/renderer/components/error-boundary-state'
 
 test('getDerivedStateFromError: Error -> hasError=true + gekappte message', () => {
-  const state = ErrorBoundary.getDerivedStateFromError(new Error('x'))
+  const state = deriveErrorBoundaryState(new Error('x'))
   expect(state.hasError).toBe(true)
   expect(state.msg).toBe('x')
 })
 
 test('getDerivedStateFromError: Nicht-Error -> hasError=true + Fallback-Text', () => {
-  const state = ErrorBoundary.getDerivedStateFromError('kaputt')
+  const state = deriveErrorBoundaryState('kaputt')
   expect(state.hasError).toBe(true)
   expect(state.msg).toBe('Unbekannter Fehler')
 })

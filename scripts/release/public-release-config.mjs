@@ -8,6 +8,7 @@ export const ROOT_FILES = new Set([
   'LICENSE',
   'NOTICE',
   'README.md',
+  'SECURITY.md',
   'electron-builder.yml',
   'electron.vite.config.ts',
   'package.json',

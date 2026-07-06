@@ -1,4 +1,5 @@
 import { Component, type ErrorInfo, type ReactNode } from 'react'
+import { deriveErrorBoundaryState, type ErrorBoundaryState } from './error-boundary-state'
 
 // A8-6, Stufe 2: globale Auffangschicht fuer den Renderer. Ein Render-Throw in
 // einem Kind wuerde sonst ein WEISSES Fenster erzeugen (React unmountet den Baum).
@@ -8,18 +9,12 @@ import { Component, type ErrorInfo, type ReactNode } from 'react'
 interface Props {
   children: ReactNode
 }
-interface State {
-  hasError: boolean
-  msg: string
-}
-
-export class ErrorBoundary extends Component<Props, State> {
-  state: State = { hasError: false, msg: '' }
+export class ErrorBoundary extends Component<Props, ErrorBoundaryState> {
+  state: ErrorBoundaryState = { hasError: false, msg: '' }
 
   // React-Lifecycle: aus dem Fehler den neuen State ableiten (rendert Fallback).
-  static getDerivedStateFromError(err: unknown): State {
-    const msg = err instanceof Error ? err.message.slice(0, 200) : 'Unbekannter Fehler'
-    return { hasError: true, msg }
+  static getDerivedStateFromError(err: unknown): ErrorBoundaryState {
+    return deriveErrorBoundaryState(err)
   }
 
   // Nur loggen (secret-frei): message + Komponenten-Herkunft, nie das ganze Objekt.

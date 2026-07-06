@@ -15,9 +15,11 @@ import { maskSecrets } from '../../src/main/services/secret-mask'
 const MASK = '•••'
 
 // Fake-Cloud-Keys (Format-treu, aber eindeutig Dummy: 'DUMMY'/wiederholte Muster).
-const FAKE_OPENAI = 'sk-proj-DUMMYaaaa1111bbbb2222cccc3333dddd4444eeee5555'
-const FAKE_ANTHROPIC = 'sk-ant-api03-DUMMYaaaabbbbccccddddeeeeffff0000111122223333'
-const FAKE_GEMINI = 'AIzaSyDUMMY_aaaa1111bbbb2222cccc3333ddd' // 39 Z, AIza-Format
+// Provider-Key-Muster werden fuer Secret-Scanner nicht als zusammenhaengendes
+// Literal abgelegt; der Test baut sie erst zur Laufzeit zusammen.
+const FAKE_OPENAI = ['sk-', 'proj-', 'DUMMYaaaa1111bbbb2222cccc3333dddd4444eeee5555'].join('')
+const FAKE_ANTHROPIC = ['sk-', 'ant-api03-', 'DUMMYaaaabbbbccccddddeeeeffff0000111122223333'].join('')
+const FAKE_GEMINI = ['AI', 'zaSy', 'DUMMY_', 'aaaa1111bbbb2222cccc3333ddd'].join('') // 39 Z, AIza-Format
 
 // 1. Nackte Cloud-Keys (kein secret-Key-Praefix) -> als Wert maskiert.
 test('D4: nackte OpenAI/Anthropic/Google-Keys werden maskiert', () => {

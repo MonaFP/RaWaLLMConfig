@@ -69,8 +69,10 @@ async function enrichRows(rows) {
   return enriched
 }
 
-function escapeCell(value) {
-  return String(value).replace(/\|/g, '\\|')
+export function escapeCell(value) {
+  return String(value)
+    .replace(/\\/g, '\\\\')
+    .replace(/\|/g, '\\|')
 }
 
 function renderTable(rows) {
@@ -116,7 +118,9 @@ async function main() {
   console.log(`third-party-notices: wrote ${outputPath}`)
 }
 
-main().catch((error) => {
-  console.error(`third-party-notices: FAIL ${error.message}`)
-  process.exit(1)
-})
+if (process.argv[1] && resolve(process.argv[1]) === fileURLToPath(import.meta.url)) {
+  main().catch((error) => {
+    console.error(`third-party-notices: FAIL ${error.message}`)
+    process.exit(1)
+  })
+}
