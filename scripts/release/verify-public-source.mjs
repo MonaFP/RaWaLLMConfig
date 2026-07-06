@@ -3,7 +3,7 @@ import { isAllowedPublicPath, isForbiddenPath, FORBIDDEN_EXTENSIONS } from './pu
 import { fileExists, normalizeRel, readTextFile, walkFiles } from './path-utils.mjs'
 
 const PATTERNS = [
-  { label: 'private-windows-user-path', regex: /C:[\\/]+Users[\\/]+ramon/i },
+  { label: 'private-windows-user-path', regex: /C:[\\/]+Users[\\/]+(?!u(?:[\\/]|$)|Public(?:[\\/]|$)|Default(?:[\\/]|$)|Default User(?:[\\/]|$)|All Users(?:[\\/]|$))[^\\/]+/i },
   { label: 'private-archive-drive-path', regex: /\bE:[\\/]/i },
   { label: 'file-dependency-protocol', metadata: true, regex: new RegExp(String.raw`\b` + 'file' + String.raw`:(\.|\/|[A-Za-z]:)`, 'i') },
   { label: 'link-dependency-protocol', metadata: true, regex: new RegExp(String.raw`\b` + 'link' + String.raw`:(\.|\/|[A-Za-z]:)`, 'i') },

@@ -1,7 +1,7 @@
 // known-roots.ts (Teil C, Import-Verdrahtung). Leitet die REALEN, schreibbaren
 // Config-Wurzeln aus den bereits geladenen Config-Daten ab — KEIN neuer IPC, KEIN
 // fs/path (Main bleibt Single Source via configRootList()). Jeder ConfigEntry/
-// Category traegt einen realen absoluten Pfad (z.B. C:\Users\…\.claude\settings.json);
+// Category traegt einen realen absoluten Pfad (z.B. C:/Users/u/.claude/settings.json);
 // die schreibbare Wurzel ist das Praefix bis einschliesslich des Allowlist-Segments:
 //   .codex                       -> …/.codex
 //   .claude (nicht nach .shared) -> …/.claude

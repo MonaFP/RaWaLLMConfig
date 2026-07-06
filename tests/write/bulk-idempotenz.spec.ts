@@ -115,7 +115,7 @@ test('F7 MAIN: leere Anfrage -> invalid-request (kein false-positive already-rec
 // ── DISPATCH: reconcile-dispatch (Renderer-pure, kein Electron) ──────────────
 
 test('F7 DISPATCH: normalizePath vereinheitlicht Backslash/Trailing/Case', () => {
-  expect(normalizePath('C:\\Users\\X\\.claude\\skills\\')).toBe('c:/users/x/.claude/skills')
+  expect(normalizePath('C:\\u\\.claude\\skills\\')).toBe('c:/u/.claude/skills')
   expect(normalizePath('/a//b/')).toBe('/a/b')
   expect(normalizePath('  /A/B  ')).toBe('/a/b')
 })

@@ -12,7 +12,7 @@ test('SKILL.md / AGENT.md sind Anker in jedem Kontext', () => {
   expect(isManifestPath('/a/b/agents/bar/AGENT.md')).toBe(true)
   // case-insensitiv + Backslash-Trenner (Windows).
   expect(isManifestPath('C:\\x\\y\\Skill.MD')).toBe(true)
-  expect(isManifestPath('C:\\users\\foo\\agents\\baz\\agent.md')).toBe(true)
+  expect(isManifestPath('C:\\u\\agents\\baz\\agent.md')).toBe(true)
   // ausserhalb eines /teams/- oder /plugins/-Pfads trotzdem Anker.
   expect(isManifestPath('/wherever/SKILL.md')).toBe(true)
 })

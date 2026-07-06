@@ -1,7 +1,7 @@
 import { test, expect } from '@playwright/test'
 import { classifyLoad } from '../../src/renderer/sections/compare/load-semantics'
 
-const RULE_PATH = 'C:/Users/example/.claude/rules/code-quality.md'
+const RULE_PATH = 'C:/u/.claude/rules/code-quality.md'
 
 test('rule without paths is classified as always-on', () => {
   const hint = classifyLoad(RULE_PATH, '~/.claude', { frontmatter: 'description' })
