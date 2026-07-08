@@ -31,8 +31,7 @@
 
 .ov-flow-shell {
   display: grid;
-  grid-template-columns: minmax(180px, 260px) minmax(0, 1fr);
-  gap: 14px;
+  gap: 12px;
   align-items: start;
 }
 
@@ -56,6 +55,10 @@
   background: var(--bg-soft);
   color: var(--text);
   font-weight: 900;
+}
+
+.ov-flow-picker {
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
 }
 
 .ov-flow-choice.active {
@@ -128,7 +131,6 @@
 }
 
 @media (max-width: 760px) {
-  .ov-flow-shell,
   .ov-flow-steps li {
     grid-template-columns: 1fr;
   }

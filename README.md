@@ -1,5 +1,13 @@
 # RaWaLLMConfig
 
+## Screenshots / Bildschirmfotos
+
+| Overview / Überblick | Modules / Module |
+| --- | --- |
+| <img src="docs/brand/dashboard-simple-mode.png" alt="RaWaLLMConfig overview with guided core flows" width="420"> | <img src="docs/brand/app-config-modules.png" alt="RaWaLLMConfig module configuration view" width="420"> |
+| Edit view / Änderungsansicht | Toolchain watcher |
+| <img src="docs/brand/model-config-edit-simple-mode.png" alt="RaWaLLMConfig edit view for model and tool configuration" width="420"> | <img src="docs/brand/toolchain-watcher.png" alt="RaWaLLMConfig toolchain watcher" width="420"> |
+
 ## Deutsch
 
 RaWaLLMConfig ist eine lokale Desktop-App, mit der KI-Tool-Konfigurationen an
@@ -17,6 +25,20 @@ verständlicher gemacht.
 
 Der öffentliche Quellcode steht unter AGPL-3.0-or-later. Externe Beiträge
 brauchen vor dem Merge eine Contributor License Agreement.
+
+### Installation für Endnutzer
+
+Die aktuelle Windows-Version liegt auf der
+[GitHub-Releases-Seite](https://github.com/MonaFP/RaWaLLMConfig/releases/latest).
+Lade dort `RaWaLLMConfig-Setup-0.1.3.exe` herunter und starte den Installer.
+
+Windows SmartScreen kann bei einem noch unsignierten Alpha-Installer einen
+Hinweis anzeigen. Das ist bei neuen, nicht signierten Open-Source-Installern
+nicht ungewöhnlich. Prüfe bei Bedarf vor dem Start den SHA256-Hash:
+
+```text
+ba76d7689d8b84e5ec067976018a3992d3c06508858dd85e64f0b556f5c0df7e
+```
 
 ### Was aktuell enthalten ist
 
@@ -124,6 +146,20 @@ some areas are still being expanded, refined, and made easier to understand.
 
 The public source code is licensed under AGPL-3.0-or-later. External
 contributions require a Contributor License Agreement before merge.
+
+### Installation for end users
+
+The current Windows version is available on the
+[GitHub Releases page](https://github.com/MonaFP/RaWaLLMConfig/releases/latest).
+Download `RaWaLLMConfig-Setup-0.1.3.exe` and run the installer.
+
+Windows SmartScreen may show a notice for this unsigned alpha installer. That
+is not unusual for new, unsigned open-source installers. If you want to verify
+the download before running it, check this SHA256 hash:
+
+```text
+ba76d7689d8b84e5ec067976018a3992d3c06508858dd85e64f0b556f5c0df7e
+```
 
 ### What is included now
 

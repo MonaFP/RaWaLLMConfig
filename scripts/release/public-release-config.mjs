@@ -23,6 +23,7 @@ export const DOC_FILES = new Set([
 ])
 
 export const GITHUB_FILES = new Set([
+  '.github/ISSUE_TEMPLATE/bug_report.yml',
   '.github/pull_request_template.md'
 ])
 
