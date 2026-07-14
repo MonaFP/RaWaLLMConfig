@@ -118,7 +118,13 @@ async function patchDialogs(runtime) {
 async function openSettings(win, tab = 'tweaks') {
   const settingsButton = win.getByRole('button', { name: /(?:Einstellungen|Settings) öffnen/i })
   try {
-    await settingsButton.waitFor({ state: 'visible', timeout: 60_000 })
+    await win.locator('.section-switch').waitFor({ state: 'visible', timeout: 60_000 })
+    if (await settingsButton.isVisible()) {
+      await settingsButton.click()
+    } else {
+      await win.getByRole('button', { name: /Weitere Bereiche öffnen/i }).click()
+      await win.getByRole('menuitem', { name: /^(?:Einstellungen|Settings)$/i }).click()
+    }
   } catch {
     const evidence = await win.evaluate(() => ({
       body: document.body?.innerText?.trim().slice(0, 800) ?? '',
@@ -129,7 +135,6 @@ async function openSettings(win, tab = 'tweaks') {
     }))
     throw new Error(`settings navigation unavailable: ${JSON.stringify(evidence)}`)
   }
-  await settingsButton.click()
   await win.locator('.settings-tabs').waitFor({ state: 'visible', timeout: STEP_TIMEOUT_MS })
   await win.locator(`#settings-tab-${tab}`).click()
 }
