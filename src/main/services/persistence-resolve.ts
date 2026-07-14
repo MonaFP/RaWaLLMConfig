@@ -39,6 +39,11 @@ export async function resolvePrefsStore(): Promise<PersistencePort> {
   return resolvedStore
 }
 
+export async function closePrefsStore(): Promise<void> {
+  const { endPool } = await import('./mariadb-pool.js')
+  await endPool()
+}
+
 async function tryResolveMariadbStore(): Promise<PersistencePort | null> {
   try {
     const { getPool } = await import('./mariadb-pool.js')

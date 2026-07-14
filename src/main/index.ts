@@ -5,7 +5,7 @@ import { registerIntegrationsIpc } from './ipc-integrations'
 import { registerWrite } from './register-write'
 import { registerUpdatesIpc } from './ipc-updates'
 import { registerDiagnosticsIpc } from './ipc-diagnostics'
-import { endPool } from './services/mariadb-pool'
+import { closePrefsStore } from './services/persistence-resolve'
 import { registerAppScheme, handleAppProtocol } from './app-protocol'
 import { enableDevtools } from './devtools'
 import { hardenWindowNavigation, installTrustedIpcGuard } from './security/electron-hardening'
@@ -126,7 +126,7 @@ app
     // Teardown: MariaDB-Pool sauber schliessen beim App-Ende.
     app.on('before-quit', () => {
       stopConfigWatcher()
-      void endPool()
+      void closePrefsStore()
     })
     createWindow()
     startConfigWatcher(() => mainWindow)

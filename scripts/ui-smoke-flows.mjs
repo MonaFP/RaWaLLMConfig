@@ -1,6 +1,5 @@
 import { _electron as electron } from '@playwright/test'
 import { createHash } from 'node:crypto'
-import { execFileSync } from 'node:child_process'
 import {
   existsSync, mkdirSync, mkdtempSync, readFileSync, writeFileSync
 } from 'node:fs'
@@ -29,7 +28,7 @@ function record(id, evidence) {
 
 function prepareRuntime() {
   const root = mkdtempSync(join(tmpdir(), 'rawallm-s9-flows-'))
-  execFileSync(process.execPath, ['tests/seed-sandbox.mjs', root], { encoding: 'utf8' })
+  seedConfigRoots(root)
   const userData = join(root, 'user-data')
   const sourceRoot = join(root, 'source-ui')
   const projectRoot = join(root, 'project-ui')
@@ -41,6 +40,19 @@ function prepareRuntime() {
   seedArchive(root)
   const update = seedUpdate(updateDir)
   return { root, userData, sourceRoot, projectRoot, updateDir, reportFile, update }
+}
+
+function seedConfigRoots(root) {
+  const fixtures = [
+    [join(root, '.claude', 'CLAUDE.md'), '# Claude sandbox\n'],
+    [join(root, '.codex', 'AGENTS.md'), '# Codex sandbox\n'],
+    [join(root, '.shared', '.claude', 'AGENTS.md'), '# Shared sandbox\n'],
+    [join(root, 'project', 'AGENTS.md'), '# Project sandbox\n']
+  ]
+  for (const [path, content] of fixtures) {
+    mkdirSync(dirname(path), { recursive: true })
+    writeFileSync(path, content, 'utf8')
+  }
 }
 
 function seedArchive(root) {
