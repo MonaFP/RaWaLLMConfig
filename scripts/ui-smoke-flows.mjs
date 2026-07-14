@@ -126,6 +126,7 @@ async function openSettings(win, tab = 'tweaks') {
       await win.getByRole('menuitem', { name: /^(?:Einstellungen|Settings)$/i }).click()
     }
   } catch {
+    if (await win.locator('.settings-tabs').isVisible()) return openSettingsTab(win, tab)
     const evidence = await win.evaluate(() => ({
       body: document.body?.innerText?.trim().slice(0, 800) ?? '',
       buttons: [...document.querySelectorAll('button')]
@@ -135,6 +136,10 @@ async function openSettings(win, tab = 'tweaks') {
     }))
     throw new Error(`settings navigation unavailable: ${JSON.stringify(evidence)}`)
   }
+  await openSettingsTab(win, tab)
+}
+
+async function openSettingsTab(win, tab) {
   await win.locator('.settings-tabs').waitFor({ state: 'visible', timeout: STEP_TIMEOUT_MS })
   await win.locator(`#settings-tab-${tab}`).click()
 }
