@@ -59,7 +59,7 @@ export async function launchElectronApp(options = {}) {
   const userDataDir = mkdtempSync(join(tmpdir(), 'rawallm-audit-'))
   let app = null
   try {
-    const launch = electron.launch({ args: ['.', `--user-data-dir=${userDataDir}`], cwd: process.cwd(), env })
+    const launch = electron.launch({ args: [`--user-data-dir=${userDataDir}`, '.'], cwd: process.cwd(), env })
     app = await withDeadline(launch, options.launchTimeoutMs ?? LAUNCH_TIMEOUT_MS, `${label}:launch`)
     auditUserDataDirs.set(app, userDataDir)
     const win = await withDeadline(app.firstWindow(), 10_000, `${label}:firstWindow`)

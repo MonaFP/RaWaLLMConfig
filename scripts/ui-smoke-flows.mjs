@@ -93,7 +93,7 @@ async function launch(runtime) {
   }
   delete env.ELECTRON_RUN_AS_NODE
   const launched = await withDeadline(
-    electron.launch({ args: ['.', `--user-data-dir=${runtime.userData}`], cwd: process.cwd(), env }),
+    electron.launch({ args: [`--user-data-dir=${runtime.userData}`, '.'], cwd: process.cwd(), env }),
     25_000,
     'ui-smoke-flows:launch'
   )
