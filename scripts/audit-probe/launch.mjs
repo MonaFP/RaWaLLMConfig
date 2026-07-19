@@ -127,7 +127,7 @@ export function electronProcessSample() {
   try {
     const out = execFileSync('tasklist', ['/FI', 'IMAGENAME eq electron.exe', '/FO', 'CSV', '/NH'], { encoding: 'utf8' })
     const rows = out.split('\n').map((line) => line.trim()).filter((line) => line.startsWith('"'))
-    return { ok: true, count: rows.length, pids: rows.map((line) => line.split('","')[1]?.replace('"', '') ?? '?') }
+    return { ok: true, count: rows.length, pids: rows.map((line) => line.split('","')[1]?.replaceAll('"', '') ?? '?') }
   } catch (error) {
     return { ok: false, error: String(error).slice(0, 120) }
   }

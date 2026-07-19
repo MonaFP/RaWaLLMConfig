@@ -167,7 +167,7 @@ test('wiederholtes Set ersetzt genau eine Zeile und erzeugt keinen zweiten Block
   expect(setUserEnvPosix('DUMMY_TOKEN', 'dummy-new', fx.options)).toBe(true)
 
   const profile = readFileSync(fx.profilePath, 'utf8')
-  expect(profile.match(new RegExp(START.replace(/[>]/g, '\\>'), 'g'))).toHaveLength(1)
+  expect(profile.match(new RegExp(START.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'), 'g'))).toHaveLength(1)
   expect(profile.match(/export DUMMY_TOKEN=/g)).toHaveLength(1)
   expect(profile).toContain('export DUMMY_TOKEN="dummy-new"')
   expect(profile).not.toContain('dummy-old')

@@ -91,6 +91,7 @@ export function isAllowedPublicPath(relPath) {
   if (GITHUB_FILES.has(relPath)) return true
   if (SCRIPT_FILES.has(relPath) || relPath.startsWith('scripts/release/')) return true
   if (relPath === 'build/icon.ico' || relPath === 'build/icon.png') return true
+  if (relPath === 'tests/seed-sandbox.mjs') return true
   if (relPath.startsWith('docs/brand/')) return true
   if (relPath.startsWith('src/')) return true
   if (relPath.startsWith('shared/')) return true

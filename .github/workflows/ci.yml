@@ -71,7 +71,7 @@ jobs:
       - name: Build
         run: pnpm build
       - name: Build native Linux packages
-        run: pnpm dist:linux
+        run: pnpm dist:linux --publish never
       - name: UI smoke
         run: xvfb-run -a pnpm smoke:ui
       - name: User-flow smoke
