@@ -184,7 +184,8 @@ async function checkConfigAndUpdate(win, runtime) {
 }
 
 async function checkArchiveAndDiagnostics(win, runtime) {
-  await win.getByRole('button', { name: /^Wiederherstellen$/i }).click()
+  // Breiten-unabhaengig: <=1120px wandert der Wiederherstellen-Tab ins Mehr-Menue.
+  await gotoSection(win, 'Wiederherstellen')
   await win.getByText('Archiv & Wiederherstellen', { exact: true }).waitFor({ state: 'visible', timeout: STEP_TIMEOUT_MS })
   await win.getByText('s9-evidence.md', { exact: true }).waitFor({ state: 'visible', timeout: STEP_TIMEOUT_MS })
   const archives = await win.evaluate(() => window.electronAPI.archiveList())
