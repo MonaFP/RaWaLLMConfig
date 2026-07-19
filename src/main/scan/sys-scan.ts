@@ -101,14 +101,26 @@ function dbArea(doc: PortsDoc | null): SystemArea {
   return { id: 'databases', label: 'Datenbanken', icon: 'db', blurb: 'MariaDB, MySQL, Neo4j.', entries }
 }
 
+// OLLAMA_* live pruefen (nur Namen, D008): gesetzte Variablen heissen
+// „Ollama aktiv" — kein statischer Snapshot-Eintrag mehr. Der alte Hardcode
+// („wirkungslos, Ollama entfernt", Stand 2026-06-07) war ein Falschpositiv:
+// Ollama laeuft, die Modelle liegen im konfigurierten lokalen Modellordner
+// (Befund 2026-07-19: OLLAMA_MODELS u.a. gesetzt, E:\models\ollama vorhanden).
+export function ollamaEnvEntry(): SystemArea['entries'][number] | null {
+  const count = Object.keys(process.env).filter((key) => key.startsWith('OLLAMA')).length
+  if (count === 0) return null
+  return { id: 'ollama', name: 'OLLAMA_*', status: 'active', v: 'gesetzt', desc: `${count} OLLAMA_*-Variablen gesetzt — Ollama aktiv, Modelle im konfigurierten lokalen Modellordner.` }
+}
+
 // Env nur NAMEN (D008) — keine Werte, kein Read von .env/secrets.
 function envArea(): SystemArea {
+  const ollama = ollamaEnvEntry()
   return {
     id: 'env', label: 'Env-Variablen', icon: 'key', blurb: 'Nur Namen — nie Werte (D008).',
     entries: [
       { id: 'creds', name: 'Credentials', status: 'active', v: 'User-Env', desc: 'Alle Secrets ueber User-Env-Variablen · nie in Dateien.' },
       { id: 'pnpm', name: 'PNPM_HOME', status: 'active', v: 'gesetzt', desc: 'pnpm-Shim im PATH.' },
-      { id: 'ollama', name: 'OLLAMA_*', status: 'stale', v: 'gesetzt', desc: 'OLLAMA_MODELS u.a. — wirkungslos (Ollama entfernt).' }
+      ...(ollama ? [ollama] : [])
     ]
   }
 }

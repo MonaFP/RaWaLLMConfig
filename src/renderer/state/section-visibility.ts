@@ -14,3 +14,20 @@ export function isExpertOnlySection(section: Section): boolean {
 export function sectionVisibleForMode(section: Section, mode: DisplayMode): boolean {
   return mode === 'expert' || !isExpertOnlySection(section)
 }
+
+// Settings-Untertabs updates/sources/modules sind per Modus-Weiche in
+// SettingsSection Experten-Bereiche: eine Diagnose-Route dorthin ist im
+// Simple-Modus ein totes Ziel (der Tab rendert nicht), obwohl die Sektion
+// „Einstellungen" selbst sichtbar bleibt. Befund 2026-07-19: Laien landeten
+// ueber eine Diagnosekarte auf dem Darstellungs-Tab ohne Handlungsfaehrung.
+const EXPERT_ONLY_SETTINGS_FOCUS: ReadonlyArray<string> = [
+  'settings-tab-updates',
+  'settings-tab-sources',
+  'settings-tab-modules'
+]
+
+export function actionVisibleForMode(action: { route: Section; focusId?: string }, mode: DisplayMode): boolean {
+  if (!sectionVisibleForMode(action.route, mode)) return false
+  if (mode === 'expert') return true
+  return !(action.route === 'settings' && action.focusId !== undefined && EXPERT_ONLY_SETTINGS_FOCUS.includes(action.focusId))
+}

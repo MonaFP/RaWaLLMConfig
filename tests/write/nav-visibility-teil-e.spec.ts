@@ -135,9 +135,11 @@ test('review fixes e-wp1: switch visibility, safe routing, settings gating', () 
   const ovHead900 = overviewCss.slice(overviewCss.indexOf('@media (max-width: 900px)'))
   expect(ovHead900).toContain('flex-wrap: wrap')
   // Fix 2: Diagnose-/NextAction-Buttons routen modus-sicher (kein toter Guard-Button).
-  expect(overviewSection).toContain('sectionVisibleForMode(card.diagnosisAction.route')
+  // Seit 2026-07-19 ueber actionVisibleForMode (deckt zusaetzlich die Experten-
+  // Tabs der Einstellungen ab) statt reiner Sektions-Sichtbarkeit.
+  expect(overviewSection).toContain('pickNextDiagnosisCard(diagnosisCards')
   expect(overviewSection).toContain('onOpenExpert')
-  expect(diagnosisCards).toContain('isExpertOnlySection(props.card.diagnosisAction.route)')
+  expect(diagnosisCards).toContain('actionVisibleForMode(props.card.diagnosisAction')
   expect(diagnosisCards).toContain('diagnostics.card.openInExpert')
   // Fix 3: Backup/Export/Import-Karte nur im Expert-Modus (Teilplan F: selber
   // Modus-Wert, jetzt als Hook-Alias `displayMode` aus useDisplayModeSwitch).

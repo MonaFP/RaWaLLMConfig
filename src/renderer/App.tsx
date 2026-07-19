@@ -118,7 +118,7 @@ function SectionBody({ section, onReopenOnboarding }: { section: Section; onReop
 }
 
 function SectionSwitch({ section, onReopenOnboarding }: { section: Section; onReopenOnboarding: () => void }) {
-  if (section === 'overview') return <OverviewSection />
+  if (section === 'overview') return <OverviewSection onReopenOnboarding={onReopenOnboarding} />
   if (section === 'baum') return <TreeSection />
   if (section === 'referenz') return <ReferenceSection />
   if (section === 'graph') return <GraphSection />

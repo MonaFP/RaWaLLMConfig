@@ -3,7 +3,6 @@ import { Icon } from '../../components/Icon'
 import { DisplayModeSwitch } from '../../components/DisplayModeSwitch'
 import { useDisplayModeSwitch } from '../../components/useDisplayModeSwitch'
 import { msg } from '../../lib/messages'
-import { sectionVisibleForMode } from '../../state/section-visibility'
 import { useLocale } from '../../state/store-locale'
 import { useStore } from '../../state/store'
 import { useWriteConfig } from '../../state/store-write-config'
@@ -13,7 +12,7 @@ import { DiagnosisCards } from './DiagnosisCards'
 import { GuidedFlows } from './GuidedFlows'
 import { StatusStamp } from './StatusStamp'
 import { TaskCard } from './TaskCard'
-import type { DiagnosisCard } from './diagnosis-model'
+import { pickNextDiagnosisCard, type DiagnosisCard } from './diagnosis-model'
 import type { GuidedFlow } from './guided-flows-model'
 import type { OverviewModel, OverviewReadiness, OverviewTask, OverviewTone } from './overview-model'
 import { navigateToOverviewAction, type OverviewNavigationAction } from './overview-navigation'
@@ -26,7 +25,7 @@ import {
 } from './overview-selectors'
 import './OverviewSection.css'
 
-export function OverviewSection() {
+export function OverviewSection({ onReopenOnboarding }: { onReopenOnboarding?: () => void }) {
   const { config, system, watcher, ui, actions } = useStore()
   const { locale } = useLocale()
   // Modelle ueber memoisierte Selektoren (Teilplan C): Neuberechnung nur bei
@@ -39,8 +38,15 @@ export function OverviewSection() {
   )
   const flows = selectGuidedFlows(diagnosisCards, locale)
   // Modus-sicher: erste Diagnose-Karte, deren Route im aktiven Modus sichtbar
-  // ist; im Expert-Modus identisch zum bisherigen Verhalten (erste Karte).
-  const nextAction = (diagnosisCards.find((card) => sectionVisibleForMode(card.diagnosisAction.route, ui.displayMode))?.diagnosisAction) ?? model.nextAction
+  // UND erreichbar ist (Experten-Tabs in den Einstellungen zaehlen im Simple-
+  // Modus als totes Ziel). Diese Karte wird zusaetzlich aus der Diagnose-Liste
+  // herausgefiltert, damit derselbe Befund nicht doppelt (Aktions-Zeile oben
+  // + eigene Karte) erscheint (Befund 2026-07-19).
+  const nextCard = pickNextDiagnosisCard(diagnosisCards, ui.displayMode)
+  const nextAction = nextCard?.diagnosisAction ?? model.nextAction
+  const listedDiagnosisCards = nextCard
+    ? diagnosisCards.filter((card) => card.id !== nextCard.id)
+    : diagnosisCards
   const coverageRows = selectCoverageEntries(config.data)
   const ack = useCoverageAck()
   return (
@@ -49,13 +55,14 @@ export function OverviewSection() {
       <OverviewModeContent
         displayMode={ui.displayMode}
         model={model}
-        diagnosisCards={diagnosisCards}
+        diagnosisCards={listedDiagnosisCards}
         coverageRows={coverageRows}
         flows={flows}
         nextAction={nextAction}
         onOpen={actions.setSection}
         onAck={ack.onAck}
         ackDisabled={ack.ackDisabled}
+        onReopenOnboarding={onReopenOnboarding}
       />
     </main>
   )
@@ -96,6 +103,7 @@ function OverviewModeContent(props: {
   onOpen(section: Section): void
   onAck(row: CoverageEntryRow): void
   ackDisabled: boolean
+  onReopenOnboarding?: () => void
 }) {
   const { actions } = useStore()
   const acknowledgedCount = props.coverageRows.filter((row) => row.entry.status === 'acknowledged').length
@@ -125,7 +133,7 @@ function OverviewModeContent(props: {
         ackDisabledReason={msg('coverage.action.ackDisabled')}
       />}
       <section className="ov-zone ov-zone-paths" aria-label={msg('overview.zone.areaPaths')}>
-        <GuidedFlows flows={props.flows} onOpen={props.onOpen} />
+        <GuidedFlows flows={props.flows} onOpen={props.onOpen} onReopenOnboarding={props.onReopenOnboarding} />
         <TaskGrid tasks={props.model.tasks} displayMode={props.displayMode} onOpen={props.onOpen} />
       </section>
     </>

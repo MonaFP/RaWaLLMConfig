@@ -8,9 +8,10 @@ import './GuidedFlows.css'
 interface GuidedFlowsProps {
   flows: GuidedFlow[]
   onOpen(section: Section): void
+  onReopenOnboarding?: () => void
 }
 
-export function GuidedFlows({ flows, onOpen }: GuidedFlowsProps) {
+export function GuidedFlows({ flows, onOpen, onReopenOnboarding }: GuidedFlowsProps) {
   const [activeId, setActiveId] = useState<GuidedFlowId | null>(null)
   const activeFlow = flows.find((flow) => flow.id === activeId) ?? null
   return (
@@ -19,7 +20,7 @@ export function GuidedFlows({ flows, onOpen }: GuidedFlowsProps) {
       <div className="ov-flow-shell">
         <FlowPicker flows={flows} activeId={activeId} onSelect={setActiveId} />
         {activeFlow ? (
-          <FlowPanel flow={activeFlow} onCancel={() => setActiveId(null)} onOpen={onOpen} />
+          <FlowPanel flow={activeFlow} onCancel={() => setActiveId(null)} onOpen={onOpen} onReopenOnboarding={onReopenOnboarding} />
         ) : (
           <p className="ov-flow-empty">{msg('guidedFlows.selectHint')}</p>
         )}
@@ -59,7 +60,11 @@ function FlowPicker(props: {
   )
 }
 
-function FlowPanel(props: { flow: GuidedFlow; onCancel(): void; onOpen(section: Section): void }) {
+function FlowPanel(props: { flow: GuidedFlow; onCancel(): void; onOpen(section: Section): void; onReopenOnboarding?: () => void }) {
+  // firstStart fuehrt DIREKT in die Einrichtung (Onboarding-Overlay), nicht
+  // erst auf die Einstellungen-Seite — dort mussten Laien den Reopen-Button
+  // erst selbst finden (Befund 2026-07-19: 4 Klicks statt 1).
+  const directOnboarding = props.flow.id === 'firstStart' && props.onReopenOnboarding !== undefined
   return (
     <div className="ov-flow-panel">
       <div className="ov-flow-panel-head">
@@ -86,7 +91,17 @@ function FlowPanel(props: { flow: GuidedFlow; onCancel(): void; onOpen(section: 
         ))}
       </ol>
       {props.flow.symptoms.length > 0 && <SymptomChoices symptoms={props.flow.symptoms} onOpen={props.onOpen} />}
-      <button type="button" className="btn primary" onClick={() => props.onOpen(props.flow.target)}>
+      <button
+        type="button"
+        className="btn primary"
+        onClick={() => {
+          if (directOnboarding) {
+            props.onReopenOnboarding!()
+            return
+          }
+          props.onOpen(props.flow.target)
+        }}
+      >
         {Icon.arrow}
         {msg('guidedFlows.backToDetails', { target: props.flow.targetLabel })}
       </button>

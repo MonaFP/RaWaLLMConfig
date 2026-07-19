@@ -1,7 +1,7 @@
 import { useState } from 'react'
 import { Icon } from '../../components/Icon'
 import { msg } from '../../lib/messages'
-import { isExpertOnlySection } from '../../state/section-visibility'
+import { actionVisibleForMode } from '../../state/section-visibility'
 import type { DisplayMode, Section } from '../../state/types'
 import type { DiagnosisCard } from './diagnosis-model'
 import { navigateToOverviewAction, type OverviewNavigationAction } from './overview-navigation'
@@ -12,7 +12,8 @@ import './DiagnosisCards.css'
 // Chevron) statt Tint-Karten. Die Coverage-Liste lebt seit E-WP1a als eigene
 // Zone in CoverageRegister.tsx; die einfache Ansicht bekommt stattdessen die
 // Bestaetigt-Zeile (CoverageAckLine). Deckelung (PAGE_SIZE) bleibt unveraendert;
-// aufgeklappt zeigen sich Zustand, Experten-Naechste-Schritte und Rohdetails.
+// aufgeklappt zeigen sich Zustand und die Laien-Naechste-Schritte (Wo?/Was
+// tun?/Was aendern?) in beiden Modi; Rohdetails bleiben Experten-Sicht.
 
 interface DiagnosisCardsProps {
   cards: DiagnosisCard[]
@@ -58,9 +59,10 @@ function DiagnosisRow(props: {
   onOpen(section: Section): void
   onOpenExpert(action: OverviewNavigationAction): void
 }) {
-  // Simple-Modus + Experten-Route: der Button schaltet erst in den
-  // Expert-Modus um und navigiert dann (kein stiller Guard = toter Button).
-  const expertRoute = props.displayMode === 'simple' && isExpertOnlySection(props.card.diagnosisAction.route)
+  // Simple-Modus + Experten-Route (Experten-Sektion ODER Experten-Tab in den
+  // Einstellungen): der Button schaltet erst in den Expert-Modus um und
+  // navigiert dann (kein stiller Guard = toter Button).
+  const expertRoute = props.displayMode === 'simple' && !actionVisibleForMode(props.card.diagnosisAction, 'simple')
   return (
     <article className={'ov-diag-row ' + props.card.severityTone}>
       <div className="ov-diag-line">
@@ -94,7 +96,7 @@ function DiagnosisRow(props: {
           <span className="ov-diag-severity">{props.card.severity}</span>
           {msg('diagnostics.card.summary', { status: props.card.status })}
         </p>
-        {props.displayMode === 'expert' && <DiagnosisNextSteps card={props.card} />}
+        <DiagnosisNextSteps card={props.card} />
         {props.displayMode === 'expert' && <DiagnosisDetails details={props.card.details} action={props.card.diagnosisAction} />}
       </div>}
     </article>

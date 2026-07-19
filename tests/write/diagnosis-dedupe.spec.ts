@@ -29,7 +29,10 @@ test('different causes remain separate cards', () => {
 
 test('simple diagnosis cards keep internal targets and evidence in expert mode', () => {
   const cards = readFileSync(resolve(process.cwd(), 'src/renderer/sections/overview/DiagnosisCards.tsx'), 'utf8')
-  expect(cards).toContain("props.displayMode === 'expert' && <DiagnosisNextSteps")
+  // Seit 2026-07-19 bekommen auch Laien die Naechste-Schritte (Wo?/Was tun?/
+  // Was aendern?) — nur die Rohdetails bleiben Experten-Sicht.
+  expect(cards).toContain('<DiagnosisNextSteps card={props.card} />')
+  expect(cards).toContain("props.displayMode === 'expert' && <DiagnosisDetails")
   expect(cards).toContain("props.displayMode === 'simple' ? props.card.action : props.card.diagnosisAction.label")
 })
 

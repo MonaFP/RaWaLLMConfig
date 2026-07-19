@@ -1,7 +1,8 @@
 import type { AppData, EntryStatus, System, SystemEntry, Watcher } from '@shared/contract'
 import { isCoverageInfoEntry } from '@shared/entry-attention'
 import { msg } from '../../lib/messages'
-import type { Section } from '../../state/types'
+import { actionVisibleForMode } from '../../state/section-visibility'
+import type { DisplayMode, Section } from '../../state/types'
 import { isOllamaHint, ollamaDiagnosisCopy, ollamaEvidence } from './diagnosis-ollama'
 import type { OverviewNavigationAction } from './overview-navigation'
 
@@ -41,6 +42,10 @@ export function buildDiagnosisCards(data: DiagnosisInput): DiagnosisCard[] {
     ...systemCards(data.system, data.config),
     ...watcherCards(data.watcher)
   ]))
+}
+
+export function pickNextDiagnosisCard(cards: readonly DiagnosisCard[], mode: DisplayMode): DiagnosisCard | undefined {
+  return cards.find((card) => actionVisibleForMode(card.diagnosisAction, mode))
 }
 
 function loadErrorCards(errors: readonly (string | null)[]): DiagnosisCard[] {
@@ -178,7 +183,11 @@ function card(
   const action = diagnosisAction(status, source, target, targetInfo)
   return {
     id,
-    title: targetInfo.title ?? msg(`diagnostics.title.${status}`),
+    // Titel bleibt konkret: ohne expliziten Titel traegt die Zeile das
+    // betroffene Ziel (z. B. „cache (Plugins)") statt einer generischen
+    // Statusfloskel — Laien sehen sonst N identische „Ein Problem"-Zeilen
+    // ohne Welches/Wo (Befund 2026-07-19).
+    title: targetInfo.title ?? targetInfo.targetLabel ?? msg(`diagnostics.title.${status}`),
     status: msg(`diagnostics.status.${status}`),
     severity: msg(`diagnostics.severity.${severityTone}`),
     severityTone,
