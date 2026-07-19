@@ -8,7 +8,7 @@ import { homedir, tmpdir } from 'node:os'
 import { dirname, join, resolve, sep } from 'node:path'
 import { pathToFileURL } from 'node:url'
 import { closeElectronApp } from './audit-probe/launch.mjs'
-import { clickNav, setDisplayMode, waitForStartup } from './audit-probe/qa-helpers.mjs'
+import { clickNav, gotoSection, setDisplayMode, waitForStartup } from './audit-probe/qa-helpers.mjs'
 import {
   failPayload, STEP_TIMEOUT_MS, UI_SMOKE_TIMEOUT_MS, withDeadline, writeJson
 } from './audit-probe/timeouts.mjs'
@@ -113,7 +113,9 @@ async function openSettings(win, tab = 'tweaks') {
   // der Flow braucht Quellen/Updates/Tweaks-Tabs, also idempotent auf Experte.
   await clickNav(win, 'Überblick')
   await setDisplayMode(win, 'expert')
-  await clickNav(win, 'Einstellungen')
+  // Breiten-unabhaengig: <=1120px wandert der Einstellungen-Tab ins Mehr-Menue
+  // (CI-Runner-Fenster schmaler als lokale Entwicklungsbreite; Befund 2026-07-19).
+  await gotoSection(win, 'Einstellungen')
   await win.locator('.settings-tabs').waitFor({ state: 'visible', timeout: STEP_TIMEOUT_MS })
   await win.locator(`#settings-tab-${tab}`).click()
 }
